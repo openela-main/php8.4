@@ -65,7 +65,7 @@
 %bcond_with      modphp
 %bcond_without   lmdb
 
-%global upver        8.4.21
+%global upver        8.4.23
 
 Summary: PHP scripting language for creating dynamic web sites
 %if %{with rename}
@@ -116,7 +116,7 @@ Patch8: php-8.4.0-libdb.patch
 # Use system nikic/php-parser
 Patch41: php-8.3.3-parser.patch
 # use system tzdata
-Patch42: php-8.4.0-systzdata-v24.patch
+Patch42: php-8.4.22-systzdata-v24.patch
 # See http://bugs.php.net/53436
 # + display PHP version backported from 8.4
 Patch43: php-8.4.0-phpize.patch
@@ -1654,7 +1654,10 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
-* Tue May 26 2026 Remi Collet <rcollet@redhat.com> - 8.4.21-2
+* Wed Jul  8 2026 Remi Collet <rcollet@redhat.com> - 8.4.23-1
+- rebase to 8.4.23
+
+* Tue May 26 2026 Remi Collet <rcollet@redhat.com> - 8.4.21-1
 - rebase to 8.4.21
 
 * Fri Jan  9 2026 Remi Collet <rcollet@redhat.com> - 8.4.16-1
