@@ -1,4 +1,4 @@
-# Fedora spec file for php
+# RHEL/Fedora spec file for php
 #
 # License: MIT
 # http://opensource.org/licenses/MIT
@@ -8,7 +8,7 @@
 
 # Option to build as php8.4 with same provides
 # php-common is the pivot package required by all
-# Only used by RHEL
+# Only used by RHEL-10
 %bcond_without      rename
 
 # API/ABI check
@@ -65,7 +65,7 @@
 %bcond_with      modphp
 %bcond_without   lmdb
 
-%global upver        8.4.23
+%global upver        8.4.24
 
 Summary: PHP scripting language for creating dynamic web sites
 %if %{with rename}
@@ -1654,6 +1654,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Wed Aug  5 2026 Remi Collet <rcollet@redhat.com> - 8.4.24-2
+- rebase to 8.4.24
+
 * Wed Jul  8 2026 Remi Collet <rcollet@redhat.com> - 8.4.23-1
 - rebase to 8.4.23
 
