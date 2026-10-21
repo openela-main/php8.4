@@ -65,7 +65,7 @@
 %bcond_with      modphp
 %bcond_without   lmdb
 
-%global upver        8.4.24
+%global upver        8.4.27
 
 Summary: PHP scripting language for creating dynamic web sites
 %if %{with rename}
@@ -1654,6 +1654,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Tue Oct 20 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.27-1
+- rebase to 8.4.27
+
 * Wed Aug  5 2026 Remi Collet <rcollet@redhat.com> - 8.4.24-2
 - rebase to 8.4.24
 
