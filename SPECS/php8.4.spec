@@ -74,7 +74,7 @@ Name: php%{major_version}
 Name: php
 %endif
 Version: %{upver}%{?rcver:~%{rcver}}
-Release: 1%{?dist}
+Release: 2%{?dist}.1
 # All files licensed under PHP version 3.01, except
 # Zend is licensed under Zend
 # TSRM is licensed under BSD
@@ -362,8 +362,8 @@ Provides: php-zts-devel%{?_isa} = %{version}-%{release}
 %endif
 %if %{with rename}
 Conflicts:  php-devel         < %{major_version}
-Provides:   php-devel         = %{version}-%{release}
-Provides:   php-devel%{?_isa} = %{version}-%{release}
+# Don't provide "php-devel" to avoid best provider
+# for extension BuildRequires
 %endif
 Recommends: php-nikic-php-parser5 >= 5.0.0
 
@@ -593,7 +593,8 @@ will need to install this package and the php package.
 %package xml
 Summary: A module for PHP applications which use XML
 # All files licensed under PHP version 3.01
-License:  PHP-3.01
+# lexbor is Apache-2.0
+License:  PHP-3.01 AND Apache-2.0
 Requires: %{name}-common%{?_isa} = %{version}-%{release}
 Provides: php-dom, php-dom%{?_isa}
 Provides: php-domxml, php-domxml%{?_isa}
@@ -601,6 +602,9 @@ Provides: php-simplexml, php-simplexml%{?_isa}
 Provides: php-xmlreader, php-xmlreader%{?_isa}
 Provides: php-xmlwriter, php-xmlwriter%{?_isa}
 Provides: php-xsl, php-xsl%{?_isa}
+# See ext/dom/lexbor/patches/README.md
+%global lexborver 2.7.0
+Provides: bundled(lexbor) = %{lexborver}
 BuildRequires: pkgconfig(libxslt)  >= 1.1
 BuildRequires: pkgconfig(libexslt)
 BuildRequires: pkgconfig(libxml-2.0)  >= 2.7.6
@@ -853,6 +857,9 @@ in pure PHP.
 %patch -P41 -p1 -b .syslib
 %patch -P42 -p1 -b .systzdata
 %patch -P43 -p1 -b .headers
+%if %{with rename}
+sed -e 's/php-devel/php%{major_version}-devel/' -i scripts/phpize.in
+%endif
 %patch -P45 -p1 -b .ldap_r
 %patch -P47 -p1 -b .phpinfo
 %patch -P48 -p1 -b .ec-param
@@ -874,6 +881,7 @@ cp ext/mbstring/libmbfl/LICENSE libmbfl_LICENSE
 cp ext/fileinfo/libmagic/LICENSE libmagic_LICENSE
 cp ext/bcmath/libbcmath/LICENSE libbcmath_LICENSE
 cp ext/date/lib/LICENSE.rst timelib_LICENSE
+cp ext/dom/lexbor/LICENSE lexbor_LICENSE
 
 # Multiple builds for multiple SAPIs
 # mod_php (apache2handler) and libphp (embed) can not be built from same tree
@@ -930,6 +938,13 @@ vpdo=`sed -n '/#define PDO_DRIVER_API/{s/.*[ 	]//;p}' ext/pdo/php_pdo_driver.h`
 if test "x${vpdo}" != "x%{pdover}"; then
    : Error: Upstream PDO ABI version is now ${vpdo}, expecting %{pdover}.
    : Update the pdover macro and rebuild.
+   exit 1
+fi
+
+vlexbor=`sed -n '/Lexbor version/{s/.* is //;s/\.$//;p}' ext/dom/lexbor/patches/README.md`
+if test "x${vlexbor}" != "x%{lexborver}"; then
+   : Error: Upstream Lexbor version is now ${vlexbor}, expecting %{lexborver}.
+   : Update the lexborver macro and rebuild.
    exit 1
 fi
 
@@ -1619,6 +1634,7 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 %files ldap -f files.ldap
 %files snmp -f files.snmp
 %files xml -f files.xml
+%license lexbor_LICENSE
 %files mbstring -f files.mbstring
 %license libmbfl_LICENSE
 %files gd -f files.gd
@@ -1654,17 +1670,24 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
-* Tue Oct 20 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.27-1
+* Tue Oct 27 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.27-2.1
+- Increment release for new build
+
+* Tue Oct 20 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.27-2
 - rebase to 8.4.27
 
 * Wed Aug  5 2026 Remi Collet <rcollet@redhat.com> - 8.4.24-2
 - rebase to 8.4.24
 
-* Wed Jul  8 2026 Remi Collet <rcollet@redhat.com> - 8.4.23-1
+* Tue Jul  7 2026 Remi Collet <rcollet@redhat.com> - 8.4.23-2
 - rebase to 8.4.23
+- do not provide "php-devel"
 
-* Tue May 26 2026 Remi Collet <rcollet@redhat.com> - 8.4.21-1
+* Tue May 26 2026 Remi Collet <rcollet@redhat.com> - 8.4.21-2
 - rebase to 8.4.21
+
+* Fri Apr 17 2026 Remi Collet <rcollet@redhat.com> - 8.4.16-2
+- add missing bundled() for lexbor library RHEL-165957
 
 * Fri Jan  9 2026 Remi Collet <rcollet@redhat.com> - 8.4.16-1
 - rebase to 8.4.16
