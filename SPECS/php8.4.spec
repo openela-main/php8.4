@@ -65,7 +65,7 @@
 %bcond_with      modphp
 %bcond_without   lmdb
 
-%global upver        8.4.27
+%global upver        8.4.28
 
 Summary: PHP scripting language for creating dynamic web sites
 %if %{with rename}
@@ -74,7 +74,7 @@ Name: php%{major_version}
 Name: php
 %endif
 Version: %{upver}%{?rcver:~%{rcver}}
-Release: 2%{?dist}.1
+Release: 1%{?dist}
 # All files licensed under PHP version 3.01, except
 # Zend is licensed under Zend
 # TSRM is licensed under BSD
@@ -1670,6 +1670,9 @@ systemctl try-restart php-fpm.service >/dev/null 2>&1 || :
 
 
 %changelog
+* Thu Nov 19 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.28-1
+- rebase to 8.4.28
+
 * Tue Oct 27 2026 Jitka Plesnikova <jplesnik@redhat.com> - 8.4.27-2.1
 - Increment release for new build
 
